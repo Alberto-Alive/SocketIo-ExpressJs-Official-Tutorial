@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected on socket: ', socket.id, socket.connected);
+    io.emit('new user has connected', (socket.id))
     socket.on('disconnect', () => {
         console.log('The user disconnected on socket: ', socket.id, socket.disconnected);
     });

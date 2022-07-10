@@ -81,11 +81,19 @@
         socket.emit('message from client to server', input.value); //send that input from the socket we are connected to
         input.value = ''; //then reset the input value in view
       }
+      input.focus(); //focus input after message was sent and input was cleared
     });
 
     socket.on('message from server to client', function (msg) { //listen for the 'chat message' event on this socket
       var item = document.createElement('li');
       item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('new user has connected', function (msg) { //listen for the 'chat message' event on this socket
+      var item = document.createElement('li');
+      item.textContent = `New user connected on socket with id: ${msg}`;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
