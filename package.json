@@ -1,0 +1,17 @@
+{
+  "name": "alberto-chat",
+  "version": "1.0.0",
+  "description": "SocketIo tutorial by Alberto",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js --watch index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alberto",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "socket.io": "^4.5.1"
+  }
+}
