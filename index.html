@@ -3,6 +3,8 @@
 
 <head>
   <title>Socket.IO chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <style>
     body {
       margin: 0;
@@ -58,13 +60,21 @@
     #messages>li:nth-child(odd) {
       background: #efefef;
     }
+
+
   </style>
 </head>
 
 <body>
   <ul id="messages"></ul>
   <form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
+    <button class="w3-button w3-black">Set
+      username: </button>
+      <label class="switch">
+        <input type="checkbox" id="inputCheckNickname">
+      </label>
+      <label for="dispalynn" id="dispalynn"></label>
+    <input id="input" autocomplete="off" /><button type="submit">Send</button>
   </form>
   <script src="/socket.io/socket.io.js">
   //Your Socket.io server listens to your HTTP server and will automatically serve this file '/socket.io/socket.io.js' via http://localhost:<port>/socket.io/socket.io.js
@@ -74,21 +84,30 @@
     var messages = document.getElementById('messages'); //target the list by id
     var form = document.getElementById('form'); //target the form by id
     var input = document.getElementById('input');//target the input by id
-
+    var inputCheckNickname = document.getElementById('inputCheckNickname');//target the input by id
+    
     form.addEventListener('submit', function (e) {//listen for a submit event, that happens when a button in a form is clicked
       e.preventDefault();
-      if (input.value) { //if there is an input
+      if (input.value && !inputCheckNickname.checked) { //if there is an input
         socket.emit('message from client to server', input.value); //send that input from the socket we are connected to
+        input.value = ''; //then reset the input value in view
+      }
+      else if(input.value && inputCheckNickname.checked) {
+        socket.emit('nickname from client to server', input.value); //send that input from the socket we are connected to
         input.value = ''; //then reset the input value in view
       }
       input.focus(); //focus input after message was sent and input was cleared
     });
 
-    socket.on('message from server to client', function (msg) { //listen for the 'chat message' event on this socket
+    socket.on('message from server to client', function (msg) { //listen for the 'message from server to client' event on this socket
       var item = document.createElement('li');
       item.textContent = msg;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('nickname from server to client', function (msg) { 
+      document.getElementById('dispalynn').innerHTML = msg
     });
 
     socket.on('new user has connected', function (msg) { //listen for the 'chat message' event on this socket

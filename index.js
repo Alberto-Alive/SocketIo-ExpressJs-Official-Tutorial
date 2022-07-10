@@ -21,6 +21,10 @@ io.on('connection', (socket) => {
         io.emit('message from server to client', msg)
         console.log('message: ' + msg);
     });
+    socket.on('nickname from client to server', (msg) => {
+        io.emit('nickname from server to client', msg)
+        console.log('message: ' + msg);
+    });
 }) //^ What's happening here? We listen for a connection (when we load the index.html), then we take the socket and display whether we are connected to the socket or not.
    //! We then listen to see if the user has disconnected/exited from the socket s/he just connected.
    //* Note that whenever we reconnect the socket id changes to a new one.
