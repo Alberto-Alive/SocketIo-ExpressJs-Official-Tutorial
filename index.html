@@ -73,7 +73,7 @@
       <label class="switch">
         <input type="checkbox" id="inputCheckNickname">
       </label>
-      <label for="dispalynn" id="dispalynn"></label>
+      <label for="displaynn" id="displaynn"></label>
     <input id="input" autocomplete="off" /><button type="submit">Send</button>
   </form>
   <script src="/socket.io/socket.io.js">
@@ -101,13 +101,14 @@
 
     socket.on('message from server to client', function (msg) { //listen for the 'message from server to client' event on this socket
       var item = document.createElement('li');
-      item.textContent = msg;
+      item.textContent = document.getElementById('displaynn').innerHTML + ": " + msg;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
 
     socket.on('nickname from server to client', function (msg) { 
-      document.getElementById('dispalynn').innerHTML = msg
+      document.getElementById('displaynn').innerHTML = msg
+      document.getElementById("inputCheckNickname").checked = false;
     });
 
     socket.on('new user has connected', function (msg) { //listen for the 'chat message' event on this socket
