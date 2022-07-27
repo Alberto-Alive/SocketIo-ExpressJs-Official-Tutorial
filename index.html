@@ -15,6 +15,7 @@
     #form {
       background: rgba(0, 0, 0, 0.15);
       padding: 0.25rem;
+      max-height: 5%;
       position: fixed;
       bottom: 0;
       left: 0;
@@ -61,27 +62,75 @@
       background: #efefef;
     }
 
+    /* Split the screen in half */
+.split {
+  height: 95%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+  background-color: rgba(162, 204, 12, 0.288);
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  background-color: red;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
   </style>
 </head>
 
 <body>
-  <ul id="messages"></ul>
-  <form id="form" action="">
-    <button class="w3-button w3-black">Set
-      username: </button>
-      <label class="switch">
-        <input type="checkbox" id="inputCheckNickname">
-      </label>
-      <label for="displaynn" id="displaynn"></label>
-    <input id="input" autocomplete="off" /><button type="submit">Send</button>
-  </form>
+  <div class="container">
+    <div class="split left">
+      <div class="centered">
+        <h2>Chat box</h2>
+        <ul id="messages"></ul>
+      </div>
+    </div>
+    
+    <div class="split right">
+      <div class="centered">
+        <h2>Chat users</h2>
+        <ul id="users"></ul>
+      </div>
+    </div>
+    <form id="form" action="">
+      <button class="w3-button w3-black">Set
+        username: </button>
+        <label class="switch">
+          <input type="checkbox" id="inputCheckNickname">
+        </label>
+        <label for="displaynn" id="displaynn"></label>
+      <input id="input" autocomplete="off" /><button type="submit">Send</button>
+    </form>
+  </div>
+
+
   <script src="/socket.io/socket.io.js">
   //Your Socket.io server listens to your HTTP server and will automatically serve this file '/socket.io/socket.io.js' via http://localhost:<port>/socket.io/socket.io.js
   </script>
   <script>
     var socket = io(); //initialise a variable with the socket.io server
-    var messages = document.getElementById('messages'); //target the list by id
+    var messages = document.getElementById('messages'); //target the messages list by id
+    var users = document.getElementById('users'); //target the users list by id
     var form = document.getElementById('form'); //target the form by id
     var input = document.getElementById('input');//target the input by id
     var inputCheckNickname = document.getElementById('inputCheckNickname');//target the input by id
@@ -96,6 +145,8 @@
         socket.emit('nickname from client to server', input.value); //send that input from the socket we are connected to
         input.value = ''; //then reset the input value in view
         document.getElementById("inputCheckNickname").checked = false;
+        var myList = document.getElementById('users');
+        myList.innerHTML = '';
       }
       input.focus(); //focus input after message was sent and input was cleared
     });
@@ -109,9 +160,15 @@
 
     socket.on('nicknames list from server to client', function (nicknamesData) { 
       document.getElementById('displaynn').innerHTML = nicknamesData.nickname
+      nicknamesData.nicknamesList.forEach(makeList);
       console.log("What is wrong with this?: " + nicknamesData.nicknamesList)
     });
-
+    
+    function makeList(item, index) {
+      var itemL = document.createElement('li');
+      itemL.textContent = item
+      users.appendChild(itemL);
+    }
     socket.on('new user has connected', function (msg) { //listen for the 'chat message' event on this socket
       var item = document.createElement('li');
       item.textContent = `New user connected on socket with id: ${msg}`;
