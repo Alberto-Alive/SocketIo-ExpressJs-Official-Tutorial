@@ -11,6 +11,8 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+nicknames = [];
+
 io.on('connection', (socket) => {
     console.log('A user connected on socket: ', socket.id, socket.connected);
     io.emit('new user has connected', (socket.id))
@@ -18,12 +20,14 @@ io.on('connection', (socket) => {
         console.log('The user disconnected on socket: ', socket.id, socket.disconnected);
     });
     socket.on('message from client to server', (msg) => {
-        io.emit('message from server to client', msg)
+        io.emit('message from server to client', {message: msg, nickname: socket.nickname})
         console.log('message: ' + msg);
     });
-    socket.on('nickname from client to server', (msg) => {
-        io.emit('nickname from server to client', msg)
-        console.log('message: ' + msg);
+    socket.on('nickname from client to server', (nickname) => {
+        socket.nickname = nickname
+        nicknames.push(socket.nickname)
+        io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames})
+        console.log('nickname: ' + nickname + '\nnicknames list: ' + nicknames);
     });
 }) //^ What's happening here? We listen for a connection (when we load the index.html), then we take the socket and display whether we are connected to the socket or not.
    //! We then listen to see if the user has disconnected/exited from the socket s/he just connected.

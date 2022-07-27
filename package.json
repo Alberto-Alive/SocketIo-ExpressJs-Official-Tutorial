@@ -4,7 +4,7 @@
   "description": "SocketIo tutorial by Alberto",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js --watch index.html",
+    "start": "nodemon index.js --watch index.html --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alberto",

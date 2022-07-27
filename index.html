@@ -95,20 +95,21 @@
       else if(input.value && inputCheckNickname.checked) {
         socket.emit('nickname from client to server', input.value); //send that input from the socket we are connected to
         input.value = ''; //then reset the input value in view
+        document.getElementById("inputCheckNickname").checked = false;
       }
       input.focus(); //focus input after message was sent and input was cleared
     });
 
     socket.on('message from server to client', function (msg) { //listen for the 'message from server to client' event on this socket
       var item = document.createElement('li');
-      item.textContent = document.getElementById('displaynn').innerHTML + ": " + msg;
+      item.textContent = msg.nickname + ": " + msg.message;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
 
-    socket.on('nickname from server to client', function (msg) { 
-      document.getElementById('displaynn').innerHTML = msg
-      document.getElementById("inputCheckNickname").checked = false;
+    socket.on('nicknames list from server to client', function (nicknamesData) { 
+      document.getElementById('displaynn').innerHTML = nicknamesData.nickname
+      console.log("What is wrong with this?: " + nicknamesData.nicknamesList)
     });
 
     socket.on('new user has connected', function (msg) { //listen for the 'chat message' event on this socket
