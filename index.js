@@ -23,11 +23,16 @@ io.on('connection', (socket) => {
         io.emit('message from server to client', {message: msg, nickname: socket.nickname})
         console.log('message: ' + msg);
     });
-    socket.on('nickname from client to server', (nickname) => {
+    socket.on('nickname from client to server', (nickname, callback) => {
+      if(nicknames.indexOf(nickname) != -1){
+        callback(false);
+      } else{
+        callback(true);
         socket.nickname = nickname
-        nicknames.push(socket.nickname)
+        nicknames.push(socket.nickname) //here we can push the socket object that will have the property nickname so we can update the socket nickname next time we update the nickname
         io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames})
         console.log('nickname: ' + nickname + '\nnicknames list: ' + nicknames);
+      }
     });
 }) //^ What's happening here? We listen for a connection (when we load the index.html), then we take the socket and display whether we are connected to the socket or not.
    //! We then listen to see if the user has disconnected/exited from the socket s/he just connected.
