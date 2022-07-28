@@ -12,8 +12,10 @@ app.get('/', (req, res) => {
 });
 
 nicknames = [];
+clients = 0;
 
 io.on('connection', (socket) => {
+    clients++;
     console.log('A user connected on socket: ', socket.id, socket.connected);
     io.emit('new user has connected', (socket.id))
     socket.on('disconnect', () => {
@@ -30,7 +32,7 @@ io.on('connection', (socket) => {
         callback(true);
         socket.nickname = nickname
         nicknames.push(socket.nickname) //here we can push the socket object that will have the property nickname so we can update the socket nickname next time we update the nickname
-        io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames})
+        io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames, totalNrSockets: clients})
         console.log('nickname: ' + nickname + '\nnicknames list: ' + nicknames);
       }
     });

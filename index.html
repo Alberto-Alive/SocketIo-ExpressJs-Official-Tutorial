@@ -120,6 +120,7 @@
         <p id="nicknameError"></p>
         <h2>Chat users</h2>
         <ul id="users"></ul>
+        <h4 id="totalNumberOfSockets">Please set your username to connect to the chat!</h4>
       </div>
     </div>
     <form id="form" action="">
@@ -178,6 +179,7 @@
     socket.on('nicknames list from server to client', function (nicknamesData) { 
       document.getElementById('displaynn').innerHTML = nicknamesData.nickname
       nicknamesData.nicknamesList.forEach(makeList);
+      document.getElementById('totalNumberOfSockets').innerHTML = "Total number of sockets: " + nicknamesData.totalNrSockets; //The number of sockets updates when you open a new page in the browser or refresh the current page in your browser
       console.log("What is wrong with this?: " + nicknamesData.nicknamesList)
     });
     
