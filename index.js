@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
         callback(true);
         socket.nickname = nickname
         nicknames.push(socket.nickname) //here we can push the socket object that will have the property nickname so we can update the socket nickname next time we update the nickname
-        io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames, totalNrSockets: clients})
+        io.emit('nicknames list from server to client', {nickname: nickname, nicknamesList: nicknames, totalNrSockets: clients, socketid: socket.id})
         console.log('nickname: ' + nickname + '\nnicknames list: ' + nicknames);
       }
     });
