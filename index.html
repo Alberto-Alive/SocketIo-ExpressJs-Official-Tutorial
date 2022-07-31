@@ -5,6 +5,8 @@
   <title>Socket.IO chat</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <style>
     body {
       margin: 0;
@@ -112,6 +114,7 @@
       <div class="centered">
         <h2>Chat box</h2>
         <ul id="messages"></ul>
+        <div class="typing"> This text will be replaced when a user is typing.</div>
       </div>
     </div>
     
@@ -146,6 +149,7 @@
     var form = document.getElementById('form'); //target the form by id
     var input = document.getElementById('input');//target the input by id
     var inputCheckNickname = document.getElementById('inputCheckNickname');//target the input by id
+    var username;
     
     form.addEventListener('submit', function (e) {//listen for a submit event, that happens when a button in a form is clicked
       e.preventDefault();
@@ -179,6 +183,7 @@
     socket.on('nicknames list from server to client', function (nicknamesData) { 
       if(socket.id == nicknamesData.socketid){
         document.getElementById('displaynn').innerHTML = nicknamesData.nickname
+        username = nicknamesData.nickname
       }
       nicknamesData.nicknamesList.forEach(makeList);
       document.getElementById('totalNumberOfSockets').innerHTML = "Total number of sockets: " + nicknamesData.totalNrSockets; //The number of sockets updates when you open a new page in the browser or refresh the current page in your browser
@@ -196,6 +201,35 @@
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
+    socket.on('userIsTyping', (info)=>{
+      if(info.typing==true)
+        $('.typing').text(`${info.user} is typing...`)
+    else
+        $('.typing').text("")
+    })
+    $(document).ready(function(){
+      console.log("Step1")
+      $('#input').keypress((e)=>{
+        console.log("Step2")
+      if($('#inputCheckNickname')[0].checked != true){
+        console.log("Checked? " + $('#inputCheckNickname')[0].checked)
+        if(e.which!=13){
+          console.log("Step3.1" + username)
+          typing=true
+          socket.emit('typing', {user:username, typing:true})
+          clearTimeout(timeout)
+          timeout=setTimeout(typingTimeout, 1500)
+      }else{
+          console.log("Step3.2")
+          clearTimeout(timeout)
+          typingTimeout()
+          sendMessage()
+      }
+      }
+      
+    })
+
+    })
   </script>
 </body>
 

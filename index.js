@@ -25,6 +25,10 @@ io.on('connection', (socket) => {
         io.emit('message from server to client', {message: msg, nickname: socket.nickname})
         console.log('message: ' + msg);
     });
+    socket.on('typing', (data)=>{
+      if(data.typing == true)
+      socket.broadcast.emit('userIsTyping', data);
+    });
     socket.on('nickname from client to server', (nickname, callback) => {
       if(nicknames.indexOf(nickname) != -1){
         callback(false);
